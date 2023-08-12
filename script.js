@@ -5,6 +5,7 @@ canvas.height = window.innerHeight;
 let particleArray = [];
 let adjustX = 6;
 let adjustY = 0;
+ctx.lineWidth = 3;
 
 // handle mouse
 const mouse = {
@@ -31,12 +32,38 @@ class Particle {
         this.size = 3;
         this.baseX = this.x;
         this.baseY = this.y;
-        this.density = (Math.random() * 40) + 5;
+        this.density = (Math.random() * 8) + 1;
+        this.distance;
     }
     draw() {
-        ctx.fillStyle = "white";
+        ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+        ctx.strokeStyle = "rgba(34, 147, 214,1)";
         ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        
+        if (this.distance < mouse.radius - 5) {
+            this.size = 13;
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.closePath();
+            ctx.beginPath();
+            ctx.arc(this.x - 3, this.y - 3, this.size / 2, 0, Math.PI * 2);
+            ctx.arc(this.x + 7, this.y + 1, this.size / 3.5, 0, Math.PI * 2);
+        }
+        else if (this.distance <= mouse.radius) {
+            this.size = 10;
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.closePath();
+            ctx.beginPath();
+            ctx.arc(this.x - 2, this.y - 2, this.size / 3, 0, Math.PI * 2);
+        } else {
+            this.size = 8;
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.closePath();
+            ctx.beginPath();
+            ctx.arc(this.x - 1, this.y - 1, this.size / 3, 0, Math.PI * 2);
+        }
         ctx.closePath();
         ctx.fill();
     }
@@ -44,6 +71,7 @@ class Particle {
         let dx = mouse.x - this.x;
         let dy = mouse.y - this.y;
         let distance = Math.sqrt(dx * dx + dy * dy);
+        this.distance = distance;
         let forceDirectionX = dx / distance;
         let forceDirectionY = dy / distance;
         let maxDistance = mouse.radius;
@@ -89,7 +117,7 @@ function animate() {
         particleArray[i].draw();
         particleArray[i].update();
     }
-    connect();
+    // connect();
     requestAnimationFrame(animate);
 }
 animate();
